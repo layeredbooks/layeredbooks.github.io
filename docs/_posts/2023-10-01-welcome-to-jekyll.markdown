@@ -12,4 +12,4 @@ with layered books will be shared.
 
 More information will come soon.
 
-[github_pages]: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll
+[github_pages]: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll
