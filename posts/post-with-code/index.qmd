@@ -1,0 +1,19 @@
+---
+title: "Post With Code"
+author: "Ola Dahl"
+date: "2024-04-23"
+categories: [news, code, analysis]
+image: "image.jpg"
+---
+
+This is a post with nice executable code.
+
+```{r}
+1 + 1
+```
+
+And some math
+
+$$
+\dot x = Ax + Bu
+$$
