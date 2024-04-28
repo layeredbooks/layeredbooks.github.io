@@ -4,7 +4,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this blog - more info will come soon"
+    "text": "This blog will contain somewhat technical thoughts around software, systems, and control.\nOf particular interest is dynamic programming. We will try to get the gist of it, and especially to figure out how we can see similarities between how it is used in control and how it is used in computer science."
   },
   {
     "objectID": "posts/welcome/index.html",

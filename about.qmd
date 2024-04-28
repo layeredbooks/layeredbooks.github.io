@@ -1,6 +1,6 @@
 ---
 title: "About"
-image: profile.jpg
+image: about_dyn_prog.png
 about:
   template: jolla
   links:
@@ -15,4 +15,6 @@ about:
       href: https://github.com
 ---
 
-About this blog - more info will come soon
+This blog will contain somewhat technical thoughts around software, systems, and control.
+
+Of particular interest is dynamic programming. We will try to get the gist of it, and especially to figure out how we can see similarities between how it is used in control and how it is used in computer science.
