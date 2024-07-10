@@ -7,11 +7,11 @@
     "text": "This blog will contain somewhat technical thoughts around software, systems, and control.\nOf particular interest is dynamic programming. We will try to get the gist of it, and especially to figure out how we can see similarities between how it is used in control and how it is used in computer science."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "posts/quarto-book/index.html",
+    "href": "posts/quarto-book/index.html",
+    "title": "A Quarto Book",
     "section": "",
-    "text": "This is the first post in my Quarto blog. Welcome!\n\nI am experimenting with Quarto, and publishing on github.io.\nMore news to come later."
+    "text": "Here is how I created a book using Quarto.\nI started with installing Quarto, using the downloadable file found on the Quarto Get Started page.\nStarting out with R Studio as the IDE, thinking that this was the only option, I switched to using VSCode.\nUsing the VSCode Quarto extension, I could now create a book, using Command-Shift-P (I am on a Mac) and the choosing the function Quarto: Create Project.\nThis led to a book with two chapters, a reference section with a reference to Donald E Knuth’s Literate Programming.\nI could render the book, in html and pdf, using the command (in the VSCode Terminal)\nquarto render\nThe pdf rendering relied on LaTeX, which I installed from this MacTex page.\nYou can read about LaTex recommendations for Quarto in the Quarto docs.\nThe book can be viewed, in a browser, by issuing the command\nquarto preview\nThe pdf version of the book can be found in the directory _book (which was created as a result of the quarto render command)\n\n\nLooking in the file _quarto.yml, I found placeholders for title and author, as\n  title: \"intocontrol_book\"\n  author: \"Norah Jones\"\nI changed those, and also the date, which was on the line below where the author was stated.\n\n\n\nI wrote some equations, in the intro.qmd file, using LaTex as I learned it when I was working in University.\nUsing the notation\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$$\nI got a nicely displayed equation, however without any equation number.\nChanging the notation, with inspiration from Stack Overflow and the Quarto documentation, to\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$${#eq-state-space}\nI saw that an equation number appeared."
   },
   {
     "objectID": "posts/post-with-code/index.html",
@@ -21,10 +21,31 @@
     "text": "This is a post with nice executable code.\n\n1 + 1\n\n[1] 2\n\n\nAnd some math\n\\[\n\\dot x = Ax + Bu\n\\]"
   },
   {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in my Quarto blog. Welcome!\n\nI am experimenting with Quarto, and publishing on github.io.\nMore news to come later."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Layered Books",
     "section": "",
-    "text": "Welcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 30, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 23, 2024\n\n\nOla Dahl\n\n\n\n\n\n\nNo matching items"
+    "text": "A Quarto Book\n\n\n\n\n\n\nbooks\n\n\nwriting\n\n\nquarto\n\n\ncontrol\n\n\n\n\n\n\n\n\n\nJul 10, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 30, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 23, 2024\n\n\nOla Dahl\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/quarto-book/index.html#setting-author-and-title",
+    "href": "posts/quarto-book/index.html#setting-author-and-title",
+    "title": "A Quarto Book",
+    "section": "",
+    "text": "Looking in the file _quarto.yml, I found placeholders for title and author, as\n  title: \"intocontrol_book\"\n  author: \"Norah Jones\"\nI changed those, and also the date, which was on the line below where the author was stated."
+  },
+  {
+    "objectID": "posts/quarto-book/index.html#adding-some-equations",
+    "href": "posts/quarto-book/index.html#adding-some-equations",
+    "title": "A Quarto Book",
+    "section": "",
+    "text": "I wrote some equations, in the intro.qmd file, using LaTex as I learned it when I was working in University.\nUsing the notation\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$$\nI got a nicely displayed equation, however without any equation number.\nChanging the notation, with inspiration from Stack Overflow and the Quarto documentation, to\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$${#eq-state-space}\nI saw that an equation number appeared."
   }
 ]

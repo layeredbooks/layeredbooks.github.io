@@ -1,0 +1,86 @@
+---
+title: "A Quarto Book"
+author: "Ola Dahl"
+date: "2024-07-10"
+categories: [books, writing, quarto, control]
+image: "image.jpg"
+---
+
+# A Quarto book
+
+Here is how I created a book using Quarto.
+
+I started with installing Quarto, using the downloadable file found on
+the Quarto [Get Started page](https://quarto.org/docs/get-started/){target="_blank"}. 
+
+Starting out with R Studio as the IDE, thinking that this was the only option, I switched to using 
+[VSCode](https://quarto.org/docs/get-started/hello/vscode.html){target="_blank"}.
+
+Using the VSCode Quarto extension, I could now create a book, using Command-Shift-P (I am on a Mac) and the choosing
+the function _Quarto: Create Project_.
+
+This led to a book with two chapters, a reference section with a reference to Donald E Knuth's _Literate Programming_.
+
+I could render the book, in html and pdf, using the command (in the VSCode Terminal)
+```
+quarto render
+```
+
+The pdf rendering relied on LaTeX, which I installed from this [MacTex page](https://tug.org/mactex/){target="_blank"}.
+
+You can read about LaTex recommendations for Quarto in the [Quarto docs](https://quarto.org/docs/output-formats/pdf-engine.html){target="_blank"}.
+
+The book can be viewed, in a browser, by issuing the command
+```
+quarto preview
+```
+
+The pdf version of the book can be found in the directory `_book` (which was created as a result of the _quarto render_ command)
+
+## Setting author and title
+
+Looking in the file `_quarto.yml`, I found placeholders for title and author, as
+
+```
+  title: "intocontrol_book"
+  author: "Norah Jones"
+```
+
+I changed those, and also the date, which was on the line below where the author was stated.
+
+## Adding some equations
+
+I wrote some equations, in the `intro.qmd` file, using LaTex as I learned it when I was working in University.
+
+Using the notation
+
+```
+$$
+\begin{aligned}
+\dot x &= Ax + Bu \\
+y &= Cx + Du
+\end{aligned}
+$$
+```
+I got a nicely displayed equation, however without any equation number.
+
+Changing the notation, with inspiration from [Stack Overflow](https://stackoverflow.com/questions/75230272/losing-equations-numbering-when-i-render-quarto-document-to-word){target="_blank"} and 
+the [Quarto documentation](https://quarto.org/docs/authoring/cross-references.html#equations){target="_blank"}, to
+
+```
+$$
+\begin{aligned}
+\dot x &= Ax + Bu \\
+y &= Cx + Du
+\end{aligned}
+$${#eq-state-space}
+```
+
+I saw that an equation number appeared.
+
+
+
+
+
+
+
