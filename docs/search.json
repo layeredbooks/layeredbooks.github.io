@@ -14,6 +14,48 @@
     "text": "Here is how I created a book using Quarto.\nI started with installing Quarto, using the downloadable file found on the Quarto Get Started page.\nStarting out with R Studio as the IDE, thinking that this was the only option, I switched to using VSCode.\nUsing the VSCode Quarto extension, I could now create a book, using Command-Shift-P (I am on a Mac) and the choosing the function Quarto: Create Project.\nThis led to a book with two chapters, a reference section with a reference to Donald E Knuth’s Literate Programming.\nI could render the book, in html and pdf, using the command (in the VSCode Terminal)\nquarto render\nThe pdf rendering relied on LaTeX, which I installed from this MacTex page.\nYou can read about LaTex recommendations for Quarto in the Quarto docs.\nThe book can be viewed, in a browser, by issuing the command\nquarto preview\nThe pdf version of the book can be found in the directory _book (which was created as a result of the quarto render command)\n\n\nLooking in the file _quarto.yml, I found placeholders for title and author, as\n  title: \"intocontrol_book\"\n  author: \"Norah Jones\"\nI changed those, and also the date, which was on the line below where the author was stated.\n\n\n\nI wrote some equations, in the intro.qmd file, using LaTex as I learned it when I was working in University.\nUsing the notation\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$$\nI got a nicely displayed equation, however without any equation number.\nChanging the notation, with inspiration from Stack Overflow and the Quarto documentation, to\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$${#eq-state-space}\nI saw that an equation number appeared."
   },
   {
+    "objectID": "posts/quarto-book/index.html#setting-author-and-title",
+    "href": "posts/quarto-book/index.html#setting-author-and-title",
+    "title": "A Quarto Book",
+    "section": "",
+    "text": "Looking in the file _quarto.yml, I found placeholders for title and author, as\n  title: \"intocontrol_book\"\n  author: \"Norah Jones\"\nI changed those, and also the date, which was on the line below where the author was stated."
+  },
+  {
+    "objectID": "posts/quarto-book/index.html#adding-some-equations",
+    "href": "posts/quarto-book/index.html#adding-some-equations",
+    "title": "A Quarto Book",
+    "section": "",
+    "text": "I wrote some equations, in the intro.qmd file, using LaTex as I learned it when I was working in University.\nUsing the notation\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$$\nI got a nicely displayed equation, however without any equation number.\nChanging the notation, with inspiration from Stack Overflow and the Quarto documentation, to\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$${#eq-state-space}\nI saw that an equation number appeared."
+  },
+  {
+    "objectID": "posts/averaging/index.html",
+    "href": "posts/averaging/index.html",
+    "title": "Averaging in discrete time",
+    "section": "",
+    "text": "I am reading the excellent book Lectures on Network Systems by Francesco Bullo.\nMy goal is to learn more about dynamic systems that are built up as networks, and also how one can control such systems.\n\n\nIn the first chapter of the book, there is a section where network systems that do averaging are described.\nA network system can be described by an undirected graph."
+  },
+  {
+    "objectID": "posts/averaging/index.html#averaging",
+    "href": "posts/averaging/index.html#averaging",
+    "title": "Averaging in discrete time",
+    "section": "",
+    "text": "In the first chapter of the book, there is a section where network systems that do averaging are described.\nA network system can be described by an undirected graph."
+  },
+  {
+    "objectID": "posts/averaging/index.html#analysis",
+    "href": "posts/averaging/index.html#analysis",
+    "title": "Averaging in discrete time",
+    "section": "Analysis",
+    "text": "Analysis\nGiven an initial state \\(x(0)\\), one might wonder what happens with \\(x(k)\\) as the time \\(k\\) increases?\nFor example, will \\(x\\) converge to a specific value? And if this happens, what would the value be?\nOne could also wonder, if such a convergence happens, how long time (how many iterations) it would take?"
+  },
+  {
+    "objectID": "posts/averaging/index.html#simulation",
+    "href": "posts/averaging/index.html#simulation",
+    "title": "Averaging in discrete time",
+    "section": "Simulation",
+    "text": "Simulation\nWe could answer our questions about what happens when time goes on, somewhat empirically, by making a computer simulation of the dynamic system \\((1)\\).\nWe decide to use Python, with numpy and matplotlib.\nA class, representing a dynamic system, can be created as\nclass DynamicSystem:\n\n    def __init__(self, A, x0):\n        self.A = A\n        n_rows, n_cols = A.shape\n        assert n_rows == n_cols\n        self.n = n_rows\n        assert len(x0) == self.n\n        self.x = x0\n\n    def run(self, n_steps):\n        # the result, as a matrix where each column represents x,\n        # for the initial value and for the n_steps steps\n        x_res = np.zeros([self.n, n_steps+1])\n        x_res[:, [0]] = self.x\n        for i in range(n_steps):\n            nx = np.matmul(self.A, self.x)\n            x_res[:, [i+1]] = nx\n            self.x = nx\n        return x_res\nWe can simulate this system, with an \\(A\\) matrix as used above and with an initial \\(x\\) chosen as \\[\nx_0=\n\\begin{bmatrix}\n1 & 2\n\\end{bmatrix}^T\n\\] for five steps, by writing a function, as\ndef line():\n    A = np.array([[1/2, 1/2], [1/2, 1/2]])\n    x0 = np.array([[1, 2]]).T\n    d_sys = DynamicSystem(A, x0)\n    x_res = d_sys.run(5)\n    print(x_res)\nRunning this function gives a printout, as\npython3 simulate.py\n[[1.  1.5 1.5 1.5 1.5 1.5]\n [2.  1.5 1.5 1.5 1.5 1.5]]\nwhere we see that each of the components in \\(x\\) converge to the average of the components of the initial value \\(x_0\\).\nWe also see that the convergence takes only one step."
+  },
+  {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
     "title": "Post With Code",
@@ -32,20 +74,6 @@
     "href": "index.html",
     "title": "Layered Books",
     "section": "",
-    "text": "A Quarto Book\n\n\n\n\n\n\nbooks\n\n\nwriting\n\n\nquarto\n\n\ncontrol\n\n\n\n\n\n\n\n\n\nJul 10, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 30, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 23, 2024\n\n\nOla Dahl\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "posts/quarto-book/index.html#setting-author-and-title",
-    "href": "posts/quarto-book/index.html#setting-author-and-title",
-    "title": "A Quarto Book",
-    "section": "",
-    "text": "Looking in the file _quarto.yml, I found placeholders for title and author, as\n  title: \"intocontrol_book\"\n  author: \"Norah Jones\"\nI changed those, and also the date, which was on the line below where the author was stated."
-  },
-  {
-    "objectID": "posts/quarto-book/index.html#adding-some-equations",
-    "href": "posts/quarto-book/index.html#adding-some-equations",
-    "title": "A Quarto Book",
-    "section": "",
-    "text": "I wrote some equations, in the intro.qmd file, using LaTex as I learned it when I was working in University.\nUsing the notation\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$$\nI got a nicely displayed equation, however without any equation number.\nChanging the notation, with inspiration from Stack Overflow and the Quarto documentation, to\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$${#eq-state-space}\nI saw that an equation number appeared."
+    "text": "Averaging in discrete time\n\n\n\n\n\n\ndynamic systems\n\n\nnetwork systems\n\n\ndiscrete time\n\n\naveraging\n\n\n\n\n\n\n\n\n\nJan 4, 2025\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nA Quarto Book\n\n\n\n\n\n\nbooks\n\n\nwriting\n\n\nquarto\n\n\ncontrol\n\n\n\n\n\n\n\n\n\nJul 10, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 30, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 23, 2024\n\n\nOla Dahl\n\n\n\n\n\n\nNo matching items"
   }
 ]

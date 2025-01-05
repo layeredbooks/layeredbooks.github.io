@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/averaging/index.html",
       "/posts/quarto-book/index.html",
       "/posts/welcome/index.html",
       "/posts/post-with-code/index.html"
