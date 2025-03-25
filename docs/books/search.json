@@ -1,0 +1,242 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Into Algorithms",
+    "section": "",
+    "text": "Preface\nThis is a book about algorithms. By algorithms, I mean algorithms in the computer science sense, such as algorithms for traversing a graph, computing prime factors of a number, or finding the best path through a maze.\nThe book reflects my experience from learning about algorithms. I have practiced, mostly using Kattis, but also participated in on-line courses and purchased, and partly read, on-line articles and books.\nI did my first Kattis problem in September 2019. Starting from a hello world style problem, I continued, with problems having difficulty level set to easy.\nI was confident that I would succeed. I regarded myself as a programmer, with several years of professional and private experience of software development.\nAfter having tried a few problems with difficulty level set to easy, I moved on to a problem with medium difficulty.\nIt was a problem about a graph, and about figuring out the shortest path to a goal from different places in the graph, and then deciding to take, for a given node, a path that was not a shortest path.\nI made several attempts, and all of them failed.\nI had heard of Dijkstra’s algorithm, but never implemented it myself. I had also heard of Dynamic Programming, and even practised it during my Master thesis work. I had no clue, however, if these two topics had anything in common.\nAfter many tries, and solving many easier problem in between, I solved the problem. This was in August 2020.\nI realized that my confidence about programming was not on par with my skills for solving Kattis problems. I had a long way to go, in order to solve more problems on medium level, and I didn’t even dare to try any problems with difficulty level set to hard.\nI wanted to learn more. I signed up for, and completed, an excellent course series on Data Structures and Algorithms. It was not for free, but it was a very rewarding investment. The teachers were excellent, the lectures were pedagogical, and the labs were challenging.\nI continued with Kattis, and managed to solve also some problems with somewhat higher difficulty level.\nI had an ongoing project where I wanted to make books with layers. The idea was, and still is, to have a book with several layers, with common content, and with content specific for each layer.\nFor a book about programming, it makes sense, I think, to have layers that correspond to programming languages.\nOut of this came the decision to write down some of my experiences of working with algorithms in the context of solving Kattis problems, as a layered book.\nIt is a work in progress, and I will continue to update it, here on GitHub, as time goes on.\nIt is written using Quarto.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "2 Sources of inspiration\nThere are many books on algorithms. Why would I try to write yet another one?\nOne reason is selfishness. When you write, you learn.\nAnother is that there might be others, in situations similar to mine (software developers that need to sharpen their algorithm skills), that might have some use of what I write.\nI have already mentioned Kattis, which is where I started by journey into algorithms. In the beginning of that journey I discovered Sannemo (2020), which I think contains very good material about competetive programming. It also contains recommended Kattis problems to solve.\nAnother book about competitive programming is Laaksonen (2020). It contains good material, and it gives a recommendation to use the CSES problem set for practice, while reading the book.\nA pair of books, with The Lower Bound of Programming Contests in the 2020s as their subtitle, and a web page with information about the books, is Halim and Halim (2018) and Halim and Halim (2020).\nAnother resource that I would like to mention is Algorithms for Competitive Programming, with descriptions of many algorithms, and code examples.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "intro.html#outline",
+    "href": "intro.html#outline",
+    "title": "1  Introduction",
+    "section": "2.1 Outline",
+    "text": "2.1 Outline\nWe start of with graphs, in Chapter 3.\n\n\n\n\nHalim, Steven, and Felix Halim. 2018. Competitive Programming 4 - Book 1. https://cpbook.net.\n\n\n———. 2020. Competitive Programming 4 - Book 2. https://cpbook.net.\n\n\nLaaksonen, Antti. 2020. Guide to Competitive Programming - Learning and Improving Algorithms Through Contests. 2nd ed. Springer.\n\n\nSannemo, Johan. 2020. Algorithmic Problem Solving. https://jsannemo.se/aps.pdf.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introduction</span>"
+    ]
+  },
+  {
+    "objectID": "sets.html",
+    "href": "sets.html",
+    "title": "2  Sets",
+    "section": "",
+    "text": "2.1 Subsets\nHow can we generate all subsets of a set?\nSuppose the set is encoded as a list of numbers.\nWe can treat the indices of these numbers as another list \\[\\begin{equation*}\n1, 2, \\ldots, n\n\\end{equation*}\\]\nWe can generate all subsets of the indices list, using Algorithm 2.1",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Sets</span>"
+    ]
+  },
+  {
+    "objectID": "sets.html#subsets",
+    "href": "sets.html#subsets",
+    "title": "2  Sets",
+    "section": "",
+    "text": "\\begin{algorithm} \\caption{Computing all subsets} \\begin{algorithmic} \\Procedure{subsets}{$v, k, n$} \\If{$k = n+1$} \\State \\Call{process}{$v$} \\EndIf \\State $v.push\\_back(k)$ \\State \\Call{subsets}{$v, k+1, n$} \\State $v.push\\_back(k)$ \\State \\Call{subsets}{$v, k+1, n$} \\EndProcedure \\end{algorithmic} \\end{algorithm}",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Sets</span>"
+    ]
+  },
+  {
+    "objectID": "graphs.html",
+    "href": "graphs.html",
+    "title": "3  Graphs",
+    "section": "",
+    "text": "3.1 Notations and Terminology\nWe describe graphs, and some algorithms for graphs.\nA graph is defined by a set of vertices, also referred to as nodes, and a set of edges.\nWe use the notation \\(V\\) for the set of vertices and the notation \\(E\\) for the set of edges.\nA graph \\(g\\) is defined as \\[\ng = (V, E)\n\\]\nAn edge is \\(e\\) is defined by a pair of vertices, as \\[\ne = (v_1, v_2)\n\\] A directed graph is a graph where the vertices in each edge \\(e\\) are interpreted as a ordered pair \\((v_1, v_2)\\), so that the edge starts at \\(v_1\\) and ends at \\(v_2\\).\nAn undirected graph is where the vertices in each edge \\(e\\) do not have any defined order. Their role is to indicate to which vertices the edge is connected, without any connotations of direction.\nA weighted graph is a graph where each edge \\(e\\) is associated with a numeric value \\(w\\), referred to as the weight of the edge.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Graphs</span>"
+    ]
+  },
+  {
+    "objectID": "graphs.html#graph-traversal",
+    "href": "graphs.html#graph-traversal",
+    "title": "3  Graphs",
+    "section": "3.2 Graph traversal",
+    "text": "3.2 Graph traversal\nWe can traverse a graph by starting from a node \\(v_s\\), and then find a way to visit all nodes that can be reached from \\(v_s\\).\nIf the graph is connected, in the sense that all its nodes can be reached from \\(v_s\\), then the graph traversal will visit all the nodes.\nIf the graph is not connected, we can, after the traversal is done, pick a node that is not yet visited. We can start a new traversal from that node. When this is done we can check if all nodes are visited. If this is not the case, we can repeat the process, by picking a new node that is not yet visited and start a new traversal from that node.\nIn the end, we will have visited all nodes.\nWhen doing a graph traversal, we must, at a given node \\(v\\), determine which node to visit next. Naturally, we must select one of the neighbors of \\(v\\).\n\n3.2.1 DFS\nIf we select a neigbor of \\(v\\), and then select one of the neighbors of the selected neigbor, and proceed like this until we come to a node where where there either are no neigbors to select, or we have already visited all neigbors, we get what is known as depth first search, abbreviated as DFS.\nWhile proceeding, we keep track of nodes where we have selected neighbors, and when we are done with a node, we return to the node from which the node we are done with was selectd. We kan keep track of this using a stack.\nIf we implement the DFS as a recursive function, the call stack for this function will serve as such a stack.\nPseudocode for a DFS algorithm is shown in Algorithm 3.1.\n\n\n\\begin{algorithm} \\caption{DFS} \\begin{algorithmic} \\Require a graph and a vector $visited$, with all elements initialized to false \\Procedure{DFS}{$v, visited$} \\State $visited[v] = true$ \\For{$v_{nb}$ \\bfseries{in} $neighbors[v]$} \\If{not $visited[v_{nb}]$} \\State \\Call{DFS}{$v_{nb}, visited$} \\EndIf \\EndFor \\EndProcedure \\end{algorithmic} \\end{algorithm}\n\n\nThe algorithm in Algorithm 3.1 performs a DFS traversal from a node \\(v\\). If we want to traverse all nodes of a graph, we can do this by using the algorithm repeatedly, where each run is started from a node that is not yet visited.\nHere is an implementation of DFS in Python.\n\n\n3.2.2 BFS\nIf we select and visit all a neigbors of \\(v\\), and then proceed in the same way for the neighbors, i.e. we visit, for each neigbour, all its neigbours before we proceed, we get what is known as breadth first search, abbreviated as BFS.\nWhile proceeding, we keep track of nodes we have visited, so that we can visit each of these nodes’ neigbours when time comes.\nWe can use a queue to keep track of nodes that we have visited.\nPseudocode for a BFS algorithm is shown in Algorithm 3.2.\n\n\n\\begin{algorithm} \\caption{BFS} \\begin{algorithmic} \\Procedure{BFS}{$v$} \\State $visited[v] = true$ \\State $q.push(v)$ \\While{$q$ not empty} \\State $v_{cur} = q.pop()$ \\For{$v_{nb}$ \\bfseries{in} $neighbors[v_{cur}]$} \\If{not $visited[v_{nb}]$} \\State $visited[v_{nb}] = true$ \\State $q.push(v_{nb})$ \\EndIf \\EndFor \\EndWhile \\EndProcedure \\end{algorithmic} \\end{algorithm}\n\n\nThe algorithm in Algorithm 3.2 performs a breadth-first traversal, starting from a node \\(v\\). If we want to traverse all nodes of a graph, we do this by using the algorithm repeatedly, where each run is started from a node that is not yet visited.\nStarting from a node \\(v\\), the DFS algorithm visits all nodes that have distance one to \\(v\\). For each of these nodes, it then visits all nodes that are at a distance two from \\(v\\).\nSuppose we have visited a node \\(v_s\\), at a distance \\(d\\) from the starting node \\(v\\). Consider the path th",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Graphs</span>"
+    ]
+  },
+  {
+    "objectID": "graphs.html#connectedness",
+    "href": "graphs.html#connectedness",
+    "title": "3  Graphs",
+    "section": "3.3 Connectedness",
+    "text": "3.3 Connectedness\n\n3.3.1 Connected components\n\n\n3.3.2 Strongly connected components\n\n\n3.3.3 Topological sort\nhttps://www.geeksforgeeks.org/topological-sorting-indegree-based-solution/\nhttps://usaco.guide/gold/toposort?lang=cpp\nDFS\nKahn\nwhat kind of queue to choose for Kahn?",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Graphs</span>"
+    ]
+  },
+  {
+    "objectID": "graphs.html#spanning-trees",
+    "href": "graphs.html#spanning-trees",
+    "title": "3  Graphs",
+    "section": "3.4 Spanning Trees",
+    "text": "3.4 Spanning Trees\nhttps://www.cs.cmu.edu/~ckingsf/class/02713-s13/lectures/lec03-othermst.pdf\nhttps://en.wikipedia.org/wiki/Minimum_spanning_tree",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Graphs</span>"
+    ]
+  },
+  {
+    "objectID": "graphs.html#paths",
+    "href": "graphs.html#paths",
+    "title": "3  Graphs",
+    "section": "3.5 Paths",
+    "text": "3.5 Paths",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Graphs</span>"
+    ]
+  },
+  {
+    "objectID": "graphs.html#eulerian-graphs",
+    "href": "graphs.html#eulerian-graphs",
+    "title": "3  Graphs",
+    "section": "3.6 Eulerian graphs",
+    "text": "3.6 Eulerian graphs",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Graphs</span>"
+    ]
+  },
+  {
+    "objectID": "graphs.html#bipartite-graphs",
+    "href": "graphs.html#bipartite-graphs",
+    "title": "3  Graphs",
+    "section": "3.7 Bipartite graphs",
+    "text": "3.7 Bipartite graphs",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Graphs</span>"
+    ]
+  },
+  {
+    "objectID": "paths.html",
+    "href": "paths.html",
+    "title": "4  Paths",
+    "section": "",
+    "text": "https://en.wikipedia.org/wiki/Longest_path_problem",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Paths</span>"
+    ]
+  },
+  {
+    "objectID": "structures.html",
+    "href": "structures.html",
+    "title": "5  Structures",
+    "section": "",
+    "text": "5.1 Disjoint sets\nConsider \\(n\\) numbers, from \\(0\\) up to and including \\(n-1\\).\nLet these numbers define \\(n\\) individual sets, with each of the sets having one member.\nWe might then want to join two of these sets.\nFor example, joining the set \\(i\\) with the set \\(j\\) gives a new set, consisting of the union of the two sets.\nGiven a number \\(a\\), we might want to ask to which set this number belongs?\nWe can accomplish this by assigning, for each set, a representative of the set.\nInitially, all numbers represent their own sets.\nAfter a join, however, we need to select a representative for the resulting set, consisting of the joined sets.\nWe form trees, with directed links going towards the root of the tree.\nHere is an example.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Structures</span>"
+    ]
+  },
+  {
+    "objectID": "structures.html#fenwick-trees",
+    "href": "structures.html#fenwick-trees",
+    "title": "5  Structures",
+    "section": "5.2 Fenwick trees",
+    "text": "5.2 Fenwick trees\nWe describe Fenwick trees. Inspiration is mostly taken from Laaksonen (2020).\nWe start with an integer number \\(v\\).\nWe are interested in the bits that are set to 1 in the binary representation of \\(v\\).\nLet’s assign indices to the bits, starting with 0 for the rightmost bit.\nAs an example, the number 52, which is written in binary as \\[\n0110100\n\\] has bits 2, 4, and 5 set to 1.\nUsing the notations \\(b_1 = 2\\), \\(b_2 = 4\\), and \\(b_3 = 5\\), we can write the number 52 as \\[\n2^{b_1} + 2^{b_2} + 2^{b_3} = 2^2 + 2^4 + 2^5 = 4 + 16 + 32 = 52\n\\]\nGeneralizing, we can consider a number \\(v\\) with bits \\[\nb_1, b_2,  \\ldots, b_k\n\\] set to 1. This number can be expressed as \\[\nv = \\sum_{i=1}^k 2^{b_i}\n\\tag{5.1}\\]\nGiven a number \\(v\\), define the function \\(p(v)\\) as a function that returns the largest power of two that divdes \\(v\\).\nFrom Equation 5.1, we see that \\[\np(v) = 2^{b_1}\n\\]\nSuppose now that we subtract \\(p(v)\\), resulting in a new number \\(v_1 = v - p(v)\\). We can note that \\(p(v_1) = 2^{b_2}\\).\nThis means that we can compute the terms in Equation 5.1 by iteratively computing the result of the function \\(p\\) and then subtracting the result.\nNoting that \\(p(1) = 0\\), we can do this as long as our number is greater or equal to 1.\nWe can write this as an algorithm, as\n\n\n\\begin{algorithm} \\caption{Iterative usage of the function p} \\begin{algorithmic} \\Procedure{p-iter}{$v$} \\While{$v$ $\\ge$ 1} \\State $v = v - p(v)$ \\EndWhile \\EndProcedure \\end{algorithmic} \\end{algorithm}\n\n\nAs an example, running the algorithm Algorithm 5.1 on the number 52 gives, for the values \\(p(v)\\), the sequence 4, 16, 32.\nWe now consider the problem of summing values in an array. We assume that the array-indexing starts at the value 1.\nSuppse we want to sum the indices from 1 up to and including 52. Noting that 52 = 4 + 16 + 32, we could make this summation by first summing from from 1 up to and including 32, then from 33 up to and including 48, and finally from 49 up to and including 52.\nGiven an array \\(a\\), we could create another array \\(t\\), where at index \\(v\\) in \\(t\\), we store the sum \\[\nt_v = \\sum_{i = v - p(v) + 1}^v a_i\n\\tag{5.2}\\]\nWe refer to the array \\(t\\) as a Fenwick tree.\nFor our example at hand, using the number 52, we would compute the sum from 1 to 52 as \\[\n\\sum_{i = 1}^{52} a_i = \\sum_{i = 49}^{52} a_i + \\sum_{i = 33}^{48} a_i + \\sum_{i = 1}^{32} a_i\n\\] Using Equation 5.2, we can write this as \\[\n\\sum_{i = 1}^{52} a_i = t_{52} + t_{48} + t_{32}\n\\]\nWe can modify Algorithm 5.1 so that it computes a sum, using the array \\(t\\). This results in\n\n\n\\begin{algorithm} \\caption{Computing the sum in a Fenwick tree} \\begin{algorithmic} \\Procedure{p-sum}{$v$, $t$} \\State $sum = 0$ \\While{$v$ $\\ge$ 1} \\State $sum = sum + t_v$ \\State $v = v - p(v)$ \\EndWhile \\EndProcedure \\end{algorithmic} \\end{algorithm}\n\n\nGiven an array \\(a\\), we can compute range sums using Algorithm 5.2, using a Fenwick tree \\(t\\).\nWe might wonder how to update \\(t\\), if the array \\(a\\) is updated?\nWe see, from Equation 5.2, which elements \\(a_i\\) that are involved in a given sum. So if an array value at index \\(i\\) is updated, we must update \\(t\\) at all places where the term at index \\(i\\) is included in a sum.\nLooking at Algorithm 5.2, we see that when computing a sum, we visit the places \\(t_v\\), with v being updated as \\[\nv = v - p(v)\n\\] and ending as soon as \\(v\\) becomes 1 or smaller than 1.\nSo if we update index \\(i\\) in \\(a\\), we could update \\(t\\) for index \\(i\\) as well as all indices above \\(i\\), computed as \\[\ni = i + p(v)\n\\]\nThis gives an algorithm for update, as\n\n\n\\begin{algorithm} \\caption{Updating a Fenwick tree} \\begin{algorithmic} \\Procedure{p-update}{$v$, $\\delta$, $t$} \\State $v_{max}$ = $length(t)$ \\While{$v$ $\\le$ $v_{max}$} \\State $t_v = t_v + \\delta$ \\State $v = v + p(v)$ \\EndWhile \\EndProcedure \\end{algorithmic} \\end{algorithm}\n\n\nYou might also want to checkout the paper that gave Fenwick trees their name.\n\n\n\n\nLaaksonen, Antti. 2020. Guide to Competitive Programming - Learning and Improving Algorithms Through Contests. 2nd ed. Springer.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Structures</span>"
+    ]
+  },
+  {
+    "objectID": "sequences.html",
+    "href": "sequences.html",
+    "title": "6  Sequences",
+    "section": "",
+    "text": "https://www.geeksforgeeks.org/count-inversions-of-size-three-in-a-give-array/\nhttps://www.geeksforgeeks.org/inversion-count-in-array-using-bit/\nhttps://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Sequences</span>"
+    ]
+  },
+  {
+    "objectID": "numbers.html",
+    "href": "numbers.html",
+    "title": "8  Numbers",
+    "section": "",
+    "text": "8.1 Prime numbers\nhttps://math.stackexchange.com/questions/1125070/counting-the-numbers-with-certain-sum-of-digits\nChecking that a number is prime\nWheels\nSieves\nhttps://en.wikipedia.org/wiki/Sieve_of_Eratosthenes\nFactors\nEuler’s totient function\nhttps://www.geeksforgeeks.org/eulers-totient-function/",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Numbers</span>"
+    ]
+  },
+  {
+    "objectID": "numbers.html#binary-exponentiation",
+    "href": "numbers.html#binary-exponentiation",
+    "title": "8  Numbers",
+    "section": "8.2 Binary exponentiation",
+    "text": "8.2 Binary exponentiation\nhttps://cp-algorithms.com/algebra/binary-exp.html\nWe want to compute \\[\\begin{equation*}\na^n\n\\end{equation*}\\]\nExpress \\(n\\) in binary, and denotes the bits set to one, with indices starting at zero for the right most bit, as \\[\\begin{equation*}\nb_1, b_2,  \\ldots, b_k\n\\end{equation*}\\] Using this information, the number \\(n\\) can be expressed as \\[\\begin{equation*}\nn = \\sum_{i=1}^k 2^{b_i}\n\\end{equation*}\\] This means that \\(a^n\\) can be expressed as \\[\na^n = a^{\\sum_{i=1}^k 2^{b_i}} = \\prod_{i=1}^k a^{2^{b_i}}\n\\tag{8.1}\\]\nWe can create an algorithm for this, as shown in Algorithm 8.1.\nWe compute a result in the variable \\(v\\). We do this by using a factor \\(f\\), which is updated every iteration of the loop which starts at line 5. The factor \\(f\\) takes on the values \\(a, a^2, a^4, \\ldots\\), and it is updated as long as the value of \\(m\\) is greater than zero.\nThe update of \\(v\\) at line is done only if the last bit of \\(m\\) is set to one. If this is the case, we update \\(v\\).\nAt line 10, we update the value of \\(m\\) by doing a right shift, i.e. a division by two.\n\n\n\\begin{algorithm} \\caption{Binary exponentiation} \\begin{algorithmic} \\Procedure{bin-exp}{$a$, $n$} \\State $v = 1$ \\State $f = a$ \\State $m = n$ \\While{$m &gt; 0$} \\If{$m \\& 1 = 1$} \\State $v = vf$ \\EndIf \\State $f = f^2$ \\State $m = m \\gg 1$ \\EndWhile \\EndProcedure \\end{algorithmic} \\end{algorithm}\n\n\nConsider the \\(n+1\\) first Fibonacci numbers, here denoted as \\(y_0, y_1, \\ldots, y_n\\), and defined as \\[\\begin{equation*}\n\\begin{aligned}\ny_0 &= 0 \\\\\ny_1 &= 1 \\\\\ny_k &= y_{k-1} + y_{k-2}, \\quad k \\ge 2\n\\end{aligned}\n\\end{equation*}\\] Introducing the state vector \\[\\begin{equation*}\nx(k) =\n\\begin{bmatrix}\nx_1(k) & x_2(k)\n\\end{bmatrix}^T\n=\n\\begin{bmatrix}\ny_k & y_{k-1}\n\\end{bmatrix}^T\n\\end{equation*}\\] with the initial value \\[\\begin{equation*}\nx(1) =\n\\begin{bmatrix}\n1 & 0\n\\end{bmatrix}^T\n\\end{equation*}\\] and the matrix \\[\\begin{equation*}\nA =\n\\begin{bmatrix}\n1 & 1 \\\\\n1 & 0\n\\end{bmatrix}\n\\end{equation*}\\] we can formulate an equation for \\(x(k+1)\\) as \\[\\begin{equation*}\nx(k+1) = A x(k)\n\\end{equation*}\\] As an example, we can compute \\(x(n)\\) as \\[\nx(n) = A x(n-1) = A^2 x(n-2) = A^3 x(n-3) = \\ldots = A^{n-1} x(1)\n\\tag{8.2}\\] We see that the n-th Fibonacci number \\(y_n\\) can be computed as \\(x_1(n)\\) with \\(x(n)\\) computed from Equation 8.2\n\\[\\begin{equation*}\n\\begin{aligned}\na &= x + 1 \\\\\nb &= x_3 + 95\n\\end{aligned}\n\\end{equation*}\\]",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Numbers</span>"
+    ]
+  },
+  {
+    "objectID": "numbers.html#coprime",
+    "href": "numbers.html#coprime",
+    "title": "8  Numbers",
+    "section": "8.3 Coprime",
+    "text": "8.3 Coprime\nhttps://math.stackexchange.com/questions/1929485/how-many-coprime-ordered-pairs-are-there-up-to-n",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Numbers</span>"
+    ]
+  },
+  {
+    "objectID": "optimizations.html",
+    "href": "optimizations.html",
+    "title": "9  Optimizations",
+    "section": "",
+    "text": "9.1 Knapsack\nWe have \\(n\\) items, with values \\(v_i\\) and weights \\(c_i\\).\nFor each item, we can choose to use it or not.\nWe use a binary vector \\(x\\), with elements \\(x_i\\) to indicate our choices.\nWe use the notation \\(x[1:n]\\) to indicate a vector \\(x\\) with \\(n\\) components, i.e. \\[\\begin{equation*}\n\\begin{bmatrix}\nx_1 & x_2 & \\ldots & x_n\n\\end{bmatrix}^T\n\\end{equation*}\\]\nThe total capacity of the knapsack is \\(C\\).\nWe want to maximize the total value \\[\\begin{equation*}\nV(n, x) = \\sum_{i=1}^n v_i x_i\n\\end{equation*}\\] This means that we want to compute \\[\\begin{equation*}\n\\max_{x} V(n, x) = \\max_{x} \\sum_{i=1}^n v_i x_i\n\\end{equation*}\\] subject to the constraint that we don’t exceed the capacity of the knapsack. This constraint can be written as \\[\\begin{equation*}\n\\sum_{i=1}^n c_i x_i \\le C\n\\end{equation*}\\] We also have the constraint that each element can be chosen, or not chosen, which can be written as \\[\\begin{equation*}\nx_i \\in \\{0, 1\\} , \\quad i = 1, \\ldots, n\n\\end{equation*}\\]",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Optimizations</span>"
+    ]
+  },
+  {
+    "objectID": "optimizations.html#knapsack",
+    "href": "optimizations.html#knapsack",
+    "title": "9  Optimizations",
+    "section": "",
+    "text": "9.1.1 Trying all possibilities\n\n\n9.1.2 Greedy\n\n\n9.1.3 Dynamic programming\nConsider an optimal solution to the problem \\[\\begin{equation*}\n\\max_{x[1:n]} V(n, x[1:n])\n\\end{equation*}\\] We use the notation \\(V^*(n, x^*[1:n])\\) for this solution, i.e. \\[\\begin{equation*}\n\\max_{x[1:n]} V(n, x[1:n]) = V^*(n, x^*[1:n])\n\\end{equation*}\\]\nSuppose that the last element in the optimal solution is zero, i.e. \\(x_n^* = 0\\).\nThis means that \\[\\begin{equation*}\nV^*(n, x^*[1:n]) = V(n-1, x^*[1:n-1])\n\\end{equation*}\\] and that the optimal solution can be expressed as \\[\\begin{equation*}\n\\max_{x[1:n]} V(n, x[1:n]) = V(n-1, x^*[1:n-1])\n\\end{equation*}\\]\nWe might wonder if this is an optimal solution to the problem \\[\\begin{equation*}\n\\max_{x[1:n-1]} V(n, x[1:n-1])\n\\end{equation*}\\]",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Optimizations</span>"
+    ]
+  },
+  {
+    "objectID": "summary.html",
+    "href": "summary.html",
+    "title": "10  Summary",
+    "section": "",
+    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2",
+    "crumbs": [
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Summary</span>"
+    ]
+  },
+  {
+    "objectID": "extra.html",
+    "href": "extra.html",
+    "title": "11  Extra",
+    "section": "",
+    "text": "Directed and Undirected\n\n# kalle was here\n\ndef main():\n  print('oh dear, this is Python')\nLet’s make some pseudo code, as\n\n\n\\begin{algorithm} \\caption{Quicksort} \\begin{algorithmic} \\Procedure{Quicksort}{$A, p, r$} \\If{$p &lt; r$} \\State $q = $ \\Call{Partition}{$A, p, r$} \\State \\Call{Quicksort}{$A, p, q - 1$} \\State \\Call{Quicksort}{$A, q + 1, r$} \\EndIf \\EndProcedure \\Procedure{Partition}{$A, p, r$} \\State $x = A[r]$ \\State $i = p - 1$ \\For{$j = p$ \\bfseries{to} $r - 1$} \\If{$A[j] &lt; x$} \\State $i = i + 1$ \\State exchange $A[i]$ with $A[j]$ \\EndIf \\State exchange $A[i]$ with $A[r]$ \\EndFor \\EndProcedure \\end{algorithmic} \\end{algorithm}\n\n\nCool, right?",
+    "crumbs": [
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Extra</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Halim, Steven, and Felix Halim. 2018. Competitive Programming 4 -\nBook 1. https://cpbook.net.\n\n\n———. 2020. Competitive Programming 4 - Book 2. https://cpbook.net.\n\n\nLaaksonen, Antti. 2020. Guide to Competitive Programming - Learning\nand Improving Algorithms Through Contests. 2nd ed. Springer.\n\n\nSannemo, Johan. 2020. Algorithmic Problem Solving. https://jsannemo.se/aps.pdf.",
+    "crumbs": [
+      "References"
+    ]
+  }
+]
