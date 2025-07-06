@@ -28,6 +28,20 @@
     "text": "I wrote some equations, in the intro.qmd file, using LaTex as I learned it when I was working in University.\nUsing the notation\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$$\nI got a nicely displayed equation, however without any equation number.\nChanging the notation, with inspiration from Stack Overflow and the Quarto documentation, to\n$$\n\\begin{aligned}\n\\dot x &= Ax + Bu \\\\\ny &= Cx + Du\n\\end{aligned}\n$${#eq-state-space}\nI saw that an equation number appeared."
   },
   {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in my Quarto blog. Welcome!\n\nI am experimenting with Quarto, and publishing on github.io.\nMore news to come later."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with nice executable code.\n\n1 + 1\n\n[1] 2\n\n\nAnd some math\n\\[\n\\dot x = Ax + Bu\n\\]"
+  },
+  {
     "objectID": "posts/averaging/index.html",
     "href": "posts/averaging/index.html",
     "title": "Averaging in discrete time",
@@ -56,24 +70,17 @@
     "text": "Simulation\nWe could answer our questions about what happens when time goes on, somewhat empirically, by making a computer simulation of the dynamic system \\((1)\\).\nWe decide to use Python, with numpy and matplotlib.\nA class, representing a dynamic system, can be created as\nclass DynamicSystem:\n\n    def __init__(self, A, x0):\n        self.A = A\n        n_rows, n_cols = A.shape\n        assert n_rows == n_cols\n        self.n = n_rows\n        assert len(x0) == self.n\n        self.x = x0\n\n    def run(self, n_steps):\n        # the result, as a matrix where each column represents x,\n        # for the initial value and for the n_steps steps\n        x_res = np.zeros([self.n, n_steps+1])\n        x_res[:, [0]] = self.x\n        for i in range(n_steps):\n            nx = np.matmul(self.A, self.x)\n            x_res[:, [i+1]] = nx\n            self.x = nx\n        return x_res\nWe can simulate this system, with an \\(A\\) matrix as used above and with an initial \\(x\\) chosen as \\[\nx_0=\n\\begin{bmatrix}\n1 & 2\n\\end{bmatrix}^T\n\\] for five steps, by writing a function, as\ndef line():\n    A = np.array([[1/2, 1/2], [1/2, 1/2]])\n    x0 = np.array([[1, 2]]).T\n    d_sys = DynamicSystem(A, x0)\n    x_res = d_sys.run(5)\n    print(x_res)\nRunning this function gives a printout, as\npython3 simulate.py\n[[1.  1.5 1.5 1.5 1.5 1.5]\n [2.  1.5 1.5 1.5 1.5 1.5]]\nwhere we see that each of the components in \\(x\\) converge to the average of the components of the initial value \\(x_0\\).\nWe also see that the convergence takes only one step."
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "objectID": "posts/dynprog/index.html",
+    "href": "posts/dynprog/index.html",
+    "title": "Dynamic Programming",
     "section": "",
-    "text": "This is a post with nice executable code.\n\n1 + 1\n\n[1] 2\n\n\nAnd some math\n\\[\n\\dot x = Ax + Bu\n\\]"
-  },
-  {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in my Quarto blog. Welcome!\n\nI am experimenting with Quarto, and publishing on github.io.\nMore news to come later."
+    "text": "This post is a work in progress\nI learned the term dynamic programming during my master thesis work.\nI was a long time ago, and my work was in the field of image processing.\nI called it image processing, but it was also referred to as computer vision. Neural networks were there, but not yet used for computer vision.\nTo be more precise, the goal was to process images, from inside an industrial furnace, with the goal of establishing the boundary between a light region and a dark region.\nThe light region was there because of fire (it was a bark furnace, used for generation of heat, and perhaps electricity), and the dark region was where there was no fire.\nWe called the boundary for the ash line.\nWe can assume that the ash line, if it could be detected, would be a boundary, dividing the image in two halves - an upper and a lower half.\nHaving established the position of the ash line, across an image, the next goal was to control the burning in the furnace so that the ash line became located at a desired position. This was not done in my master thesis, where the goal was to locate the ash line.\nAs a first approach, I tried different ways of segmenting the image, using methods such as thresholding, or finding a boundary using image gradients.\nThis worked well for some images, and not so well for others.\nAbout halfway in to the work, my thesis advisor proposed that I should try dynamic programming.\nI had no clue what was meant with those words.\nI got a reference to a book chapter, where the usage of dynamic programming for image processing was described."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Layered Books",
     "section": "",
-    "text": "Averaging in discrete time\n\n\n\n\n\n\ndynamic systems\n\n\nnetwork systems\n\n\ndiscrete time\n\n\naveraging\n\n\n\n\n\n\n\n\n\nJan 4, 2025\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nA Quarto Book\n\n\n\n\n\n\nbooks\n\n\nwriting\n\n\nquarto\n\n\ncontrol\n\n\n\n\n\n\n\n\n\nJul 10, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 30, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 23, 2024\n\n\nOla Dahl\n\n\n\n\n\n\nNo matching items"
+    "text": "Dynamic Programming\n\n\n\n\n\n\noptimization\n\n\ndynamic systems\n\n\ndynamic programming\n\n\n\n\n\n\n\n\n\nJul 6, 2025\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nAveraging in discrete time\n\n\n\n\n\n\ndynamic systems\n\n\nnetwork systems\n\n\ndiscrete time\n\n\naveraging\n\n\n\n\n\n\n\n\n\nJan 4, 2025\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nA Quarto Book\n\n\n\n\n\n\nbooks\n\n\nwriting\n\n\nquarto\n\n\ncontrol\n\n\n\n\n\n\n\n\n\nJul 10, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 30, 2024\n\n\nOla Dahl\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 23, 2024\n\n\nOla Dahl\n\n\n\n\n\n\nNo matching items"
   }
 ]

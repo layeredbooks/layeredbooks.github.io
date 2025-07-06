@@ -1,0 +1,49 @@
+---
+title: "Dynamic Programming"
+author: "Ola Dahl"
+date: "2025-07-06"
+categories: [optimization, dynamic systems, dynamic programming]
+image: "bellman.jpg"
+---
+
+# Dynamic Programming
+
+_This post is a work in progress_
+
+I learned the term _dynamic programming_ during my master thesis work. 
+
+I was a long time ago, and my work was in the field of image processing.
+
+I called it image processing, but it was also referred to as computer vision. Neural networks were there, but not yet used for computer vision.
+
+To be more precise, the goal was to process images, from inside an industrial furnace, with the goal of establishing the boundary between a light region 
+and a dark region.
+
+The light region was there because of fire (it was a bark furnace, used for generation of heat, and perhaps electricity), and the dark region was where
+there was no fire.
+
+We called the boundary for the _ash line_.
+
+We can assume that the ash line, if it could be detected, would be a boundary, dividing the image in two halves - an upper and a lower half.
+
+Having established the position of the ash line, across an image, the next goal was to control the burning in the furnace so that the 
+ash line became located at a desired position. This was not done in my master thesis, where the goal was to locate the ash line.
+
+As a first approach, I tried different ways of segmenting the image, using methods such as thresholding, or finding a boundary using 
+image gradients.
+
+This worked well for some images, and not so well for others.
+
+About halfway in to the work, my thesis advisor proposed that I should try dynamic programming.
+
+I had no clue what was meant with those words.
+
+I got a reference to a book chapter, where the usage of dynamic programming for image processing was described.
+
+## Application to image processing
+
+## What do the control guys say?
+
+## How can we relate to dynamic programming as used in computer science?
+
+## Where to go from here
