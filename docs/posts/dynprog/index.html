@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ola Dahl">
+<meta name="dcterms.date" content="2025-07-25">
+
+<title>Dynamic Programming – Layered Books</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Layered Books</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Dynamic Programming</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">optimization</div>
+                <div class="quarto-category">dynamic systems</div>
+                <div class="quarto-category">dynamic programming</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Ola Dahl </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 25, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="dynamic-programming" class="level1">
+<h1>Dynamic Programming</h1>
+<p>I learned the term <em>dynamic programming</em> during my master thesis work.</p>
+<p>It was a long time ago, and my work was in the field of image processing.</p>
+<p>I called it image processing, but it was also referred to as computer vision. Neural networks were there, but not yet used for computer vision.</p>
+<p>To be more precise, the goal was to process images, from inside an industrial furnace, with the goal of establishing the boundary between a light region and a dark region.</p>
+<p>The light region was there because of fire (it was a bark furnace, used for generation of heat, and perhaps electricity), and the dark region was where there was no fire.</p>
+<p>We used the term <em>ash line</em> for the boundary between the light region and the dark region.</p>
+<p>We assumed that the ash line, if it could be detected, would divide the image in two halves - an upper and a lower half.</p>
+<p>Having established the position of the ash line, across an image, the next goal was to control the burning in the furnace so that the ash line became located at a desired position. This was not done in my master thesis, where the goal was to locate the ash line.</p>
+<p>As a first approach, I tried different ways of segmenting the image, using methods such as thresholding, or finding a boundary using image gradients.</p>
+<p>This worked well for some images, and not so well for others.</p>
+<p>About halfway in to the work, my thesis advisor proposed that I should try dynamic programming.</p>
+<p>I had no clue what was meant with those words.</p>
+<p>I got a reference to a <a href="https://homepages.inf.ed.ac.uk/rbf/BOOKS/BANDB/bandb.htm" target="_blank">book chapter</a>, where the usage of dynamic programming for image processing was described.</p>
+<section id="optimization-with-application-to-image-processing" class="level2">
+<h2 class="anchored" data-anchor-id="optimization-with-application-to-image-processing">Optimization with application to image processing</h2>
+<p>With reference to the master thesis work, we can construct a simple example.</p>
+<p>We can imagine an 5 by 5 image, with 25 pixels with image values, as</p>
+<pre><code>3 3 3 3 3
+3 3 3 3 3
+3 3 3 3 3
+1 1 1 1 1
+1 1 1 1 1</code></pre>
+<p>The values in the above image represent light intensity.</p>
+<p>This means that a higher value represents a lighter pixel.</p>
+<p>In the image above, we see that the first three rows of the image are lighter than the bottom two rows.</p>
+<p>We can represent the ash line as a sequence of values defining, per column, on which row the ash line is located.</p>
+<p>The dynamic programming method used in the master thesis did an optimization, where the result of the optimization gave one value per column, indicating the best choice of row where the ash line would be located.</p>
+<p>For the purpose of optimization, we need a function that we can minimize (or maximize).</p>
+<p>In dynamic programming, one typically minimizes a sum, like</p>
+<p><span class="math display">\[
+\sum_{k=0}^{N} g(x_k)
+\]</span></p>
+<p>For the purpose of finding the ash line, we can think of <span class="math inline">\(k\)</span> in the above formula as a column index.</p>
+<p>We have <span class="math inline">\(N+1\)</span> terms in the sum, meaning that we think of the image as having <span class="math inline">\(N+1\)</span> columns.</p>
+<p>For each column <span class="math inline">\(k\)</span>, we shall pick a value <span class="math inline">\(x_k\)</span>, indicating the row where the ash line is located.</p>
+<p>One might wonder what a good choice for the function <span class="math inline">\(g\)</span> could be?</p>
+<p>One idea is to let <span class="math inline">\(g\)</span> represent the <em>gradient</em> in the image. The gradient in an image defines, for each pixel, how much the intensity is changing at that pixel.</p>
+<p>For simplicity, we could think of a gradient only in the vertical direction, computed as the difference between the image value at one pixel and the image value at the pixel immediately below.</p>
+<p>A high value would then indicate that the pixel is lighter than the pixel below it.</p>
+<p>Pixels with high values for this gradient could perhaps be good candidates for pointing out where the ash line is located.</p>
+<p>If so, we could perhaps find the ash line by maximizing a function <span class="math inline">\(V(x_0, \ldots, x_N)\)</span>, as <span class="math display">\[
+\max_{x_0, \ldots, x_N} V(x_0, \ldots, x_N) = \max_{x_0, \ldots, x_N} \sum_{k=0}^N g(x_k)
+\]</span> From the form of this maximization, and as a consequence of our choice of using only the vertical gradient, which means that the gradient at pixel <span class="math inline">\(x_i\)</span> is indepedent of the gradient at pixel <span class="math inline">\(x_j\)</span> when <span class="math inline">\(i \ne j\)</span>, we see that the choice of a given variable, e.g.&nbsp;<span class="math inline">\(x_i\)</span>, does not influence how we should choose another variable, e.g <span class="math inline">\(x_j\)</span>.</p>
+<p>In other words, we can maximize each of the terms <span class="math inline">\(g(x_i)\)</span> separately.</p>
+<p>The total maximum would then be the sum of these maximum values.</p>
+<p>For the image above, with the function <span class="math inline">\(g\)</span> chosen as the vertical gradient, we see that the optimal location of the ash line is between the third and the fourth rows.</p>
+<p>Using parentheses to indicate the pixels where the ash line is located, we can illustrate this as</p>
+<pre><code> 3   3   3   3   3
+ 3   3   3   3   3
+(3) (3) (3) (3) (3)
+ 1   1   1   1   1
+ 1   1   1   1   1</code></pre>
+<p>We see that for this example, with the function to maximize as chosen above, the optimization is rather trivial (and dynamic programming is not needed).</p>
+<p>We also see that for another image, as</p>
+<pre><code>3 3 9 3 3
+3 3 3 3 3
+3 3 3 3 3
+1 1 1 1 1
+1 1 1 1 1</code></pre>
+<p>the optimization would result in an ash line location, as</p>
+<pre><code> 3   3  (9)  3   3
+ 3   3   3   3   3
+(3) (3)  3  (3) (3)
+ 1   1   1   1   1
+ 1   1   1   1   1</code></pre>
+<p>Depending on how we interpret the pixel value 9, in the first row, we might consider this</p>
+<ul>
+<li>a good solution (if the ash line is really taking a “jump” upwards in the third column)</li>
+<li>a bad solution (if the value 9 is the result of a noisy pixel, and should therefore be ignored)</li>
+</ul>
+<p>If we stick with the second of the above two bullets, we might want to consider some filtering of the image, before doing the optimization.</p>
+<p>As an alternative, we could define another function for our optimization.</p>
+<p>If we do this, we might want to know how dynamic programming can be beneficial!</p>
+<p>And we could take this as motivation for reading also the rest of this post.</p>
+</section>
+<section id="optimization-as-a-sequential-decision-problem" class="level2">
+<h2 class="anchored" data-anchor-id="optimization-as-a-sequential-decision-problem">Optimization as a sequential decision problem</h2>
+<p>In the optimization problem stated above, our task is to choose the values <span class="math inline">\(x_0, \ldots x_N\)</span>.</p>
+<p>We can think of choosing these values as of choosing them in sequence.</p>
+<p>This means that we start with choosing <span class="math inline">\(x_0\)</span>. Then we choose <span class="math inline">\(x_1\)</span>. From there, we proceed with choosing <span class="math inline">\(x_2\)</span>, followed by <span class="math inline">\(x_3\)</span>, until we have chosen the final value <span class="math inline">\(x_N\)</span>.</p>
+<p>For the problem as stated above, a decision, in this sequence, at a certain time, does not have any <em>consequences</em> for which decisions that are good to make at later times.</p>
+<p>The reason for this is that we can choose the values for each image column independently.</p>
+<p>Dynamic programming is a methodology that is useful when we, as a contrast, have a sequential decision problem where the decision at one time instant <em>has</em> consequences for which decisions that are best to make at later time instants.</p>
+<p>On example could be that we need to choose a way to travel between two cities, with the goal of finding the shortest route for our journey.</p>
+<p>If we, in such a scenario, decide, at a certain crossing, to turn left or right, this might have consequences for the resulting length of our journey.</p>
+<p>Turning left may, for example, lead us to a place from where the shortest route to our destination is 100 kilometers.</p>
+<p>On the other hand, if we had turned right, we could have ended up in a place from where the shortest route to our destination is only 75 kilometers.</p>
+<p>So the action of turning left, or turning right, has consequences for which optimal value (which shortest route) we can achieve.</p>
+</section>
+<section id="dynamic-programming-with-application-in-image-processing" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-programming-with-application-in-image-processing">Dynamic programming with application in image processing</h2>
+<p>We can add a constraint to our choice of ash line, stating that when moving from one column <span class="math inline">\(k\)</span> to the column <span class="math inline">\(k+1\)</span> (the column to the right), the ash line can only move at most one pixel up or down.</p>
+<p>This constraint will put a limit on the slope of the ash line.</p>
+<p>Note that even with this added constraint, we want to find an ash line that has a high gradient.</p>
+<p>We can formulate our choosing of ash line, with the added constraint, as a decision problem where we, for each column, choose how to “move” when going to the next column.</p>
+<p>We can either</p>
+<ul>
+<li>move up, meaning that the ash line at column <span class="math inline">\(k+1\)</span> is on the row above the row chosen at colum <span class="math inline">\(k\)</span></li>
+<li>not move, meaning that the ash line at column <span class="math inline">\(k+1\)</span> is on the same row as the row chosen at colum <span class="math inline">\(k\)</span></li>
+<li>move down, meaning that the ash line at column <span class="math inline">\(k+1\)</span> is on the row below the row chosen at colum <span class="math inline">\(k\)</span></li>
+</ul>
+<p>We can use a variable <span class="math inline">\(u\)</span> to indicate our decisions. We can define <span class="math inline">\(u(k)\)</span>, for each column <span class="math inline">\(k\)</span> except the last column, as</p>
+<ul>
+<li><span class="math inline">\(u(k) = -1\)</span> when moving up</li>
+<li><span class="math inline">\(u(k) = 0\)</span> when not moving</li>
+<li><span class="math inline">\(u(k) = 1\)</span> when moving down</li>
+</ul>
+<p>Given a value <span class="math inline">\(x_k\)</span>, indicating, for column <span class="math inline">\(k\)</span>, the row on which the ash line is located, choosing <span class="math inline">\(u\)</span> then gives, using the convention that the topmost row has the lowest row number, that</p>
+<ul>
+<li><span class="math inline">\(x_{k+1} = x_k - 1\)</span> if we choose <span class="math inline">\(u(k) = -1\)</span></li>
+<li><span class="math inline">\(x_{k+1} = x_k\)</span> if we choose <span class="math inline">\(u(k) = 0\)</span></li>
+<li><span class="math inline">\(x_{k+1} = x_k + 1\)</span> if we choose <span class="math inline">\(u(k) = 1\)</span></li>
+</ul>
+<p>The above three bullets represent a functional relation that defines, for given values <span class="math inline">\(x_k\)</span> and <span class="math inline">\(u_k\)</span>, the resulting value of <span class="math inline">\(x_{k+1}\)</span>.</p>
+<p>We note that the relation is only defined for <span class="math inline">\(u = -1\)</span>, <span class="math inline">\(u = 0\)</span>, and <span class="math inline">\(u=1\)</span>.</p>
+<p>Defining an <em>admissible set</em> <span class="math display">\[
+U=\{-1, 0, 1\}
+\]</span> we can say that the three bullets represent a functional relation <span class="math display">\[
+x_{k+1} = f(x_k, u_k), \quad u_k \in U
+\]</span> From the expressions for <span class="math inline">\(x_{k+1}\)</span>, as stated in the three bullets above, we get an explicit representation for <span class="math inline">\(f\)</span>, as <span class="math display">\[
+x_{k+1} = x_k + u_k, \quad u_k \in U
+\]</span> We refer to a functional relation of this type as a <em>dynamic system</em>.</p>
+<p>We say that the dynamic system has a <em>state variable</em> <span class="math inline">\(x\)</span>, which for each time step <span class="math inline">\(k\)</span> depends on the value it had at the previous time step, combined with the value chosen for <span class="math inline">\(u\)</span> at that time step.</p>
+<p>We refer to <span class="math inline">\(u\)</span> as the <em>control signal</em>.</p>
+<p>The control signal determines (controls) how the state of the dynamic system will evolve.</p>
+<p>Returning to our original optimization problem <span class="math display">\[
+\max_{x_0, \ldots, x_N} V(x_0, \ldots, x_N) = \max_{x_0, \ldots, x_N} \sum_{k=0}^N g(x_k)
+\]</span> we can now, as an alternative formulation, say that instead of choosing values <span class="math inline">\(x_k\)</span>, we choose values <span class="math inline">\(u_k\)</span>, which then, using the dynamic system shown above result in values for the next state <span class="math inline">\(x_{k+1}\)</span>.</p>
+<p>We assume an initial state value <span class="math inline">\(x_0\)</span>.</p>
+<p>The optimization problem shall then help us finding, as a first step, <span class="math inline">\(u_0\)</span>, giving us <span class="math inline">\(x_1\)</span>. Then we shall find <span class="math inline">\(u_1\)</span>, giving us <span class="math inline">\(x_2\)</span>, and so on, up to and including the choice of <span class="math inline">\(u_{N-1}\)</span>, which gives us <span class="math inline">\(x_N\)</span>.</p>
+<p>We shall do this optimization for all possible values of <span class="math inline">\(x_0\)</span>.</p>
+<p>We reformulate the optimization problem as <span class="math display">\[
+\max_{u_0, \ldots, u_{N-1}} V(x_0, \ldots, x_N) = \max_{u_0, \ldots, u_{N-1}} \sum_{k=0}^N g(x_k)
+\]</span> where the <span class="math inline">\(x_k\)</span> values are constrained by the dynamic system <span class="math display">\[
+x_{k+1} = f(x_k, u_k), \quad u_k \in U, \quad k = 0, \ldots, N-1
+\]</span></p>
+</section>
+<section id="formulating-a-dynamic-programming-problem" class="level2">
+<h2 class="anchored" data-anchor-id="formulating-a-dynamic-programming-problem">Formulating a dynamic programming problem</h2>
+<p>When doing dynamic programming, we can proceed by first writing the function <span class="math inline">\(V\)</span> as <span class="math display">\[
+V(x_0, \ldots, x_N) = \sum_{k=0}^N g(x_k) = g(x_0) + \sum_{k=1}^N g(x_k)
+\]</span> Doing maximization gives <span class="math display">\[
+\max_{u_0, \ldots, u_{N-1}} V(x_0, \ldots, x_N) = \max_{u_0, \ldots, u_{N-1}} \sum_{k=0}^N g(x_k) = \max_{u_0, \ldots, u_{N-1}} [g(x_0) + \sum_{k=1}^N g(x_k)]
+\]</span> Consider also maximizing a <em>subproblem</em>, consisting of choosing <span class="math inline">\(u\)</span>-values <span class="math inline">\(u_1, \ldots, u_{N-1}\)</span>, as <span class="math display">\[
+\max_{u_1, \ldots, u_{N-1}} \sum_{k=1}^N g(x_k)
+\]</span> We might be able to convince ourselves that this subproblem can be used when solving the original problem, by rewriting the original problem as <span class="math display">\[
+\max_{u_0, \ldots, u_{N-1}} V(x_0, \ldots, x_N) = \max_{u_0, \ldots, u_{N-1}} [g(x_0) + \sum_{k=1}^N g(x_k)] =
+\max_{u_0}[g(x_0) + \max_{u_1, \ldots, u_{N-1}} \sum_{k=1}^N g(x_k)]
+\]</span> In the same way, we can rewrite the subproblem starting at <span class="math inline">\(x_1\)</span> <span class="math display">\[
+\max_{u_1, \ldots, u_{N-1}} \sum_{k=1}^N g(x_k)
+\]</span> using a subproblem starting at <span class="math inline">\(x_2\)</span>, as <span class="math display">\[
+\max_{u_1, \ldots, u_{N-1}} V(x_1, \ldots, x_N) = \max_{u_1, \ldots, u_{N-1}} [g(x_1) + \sum_{k=2}^N g(x_k)] =
+\max_{u_1}[g(x_1) + \max_{u_2, \ldots, u_{N-1}} \sum_{k=2}^N g(x_k)]
+\]</span></p>
+<p>Introducing the notation <span class="math display">\[
+J_k(x_k) = \max_{u_k, \ldots, u_{N-1}} V(x_k, \ldots, x_N) = \max_{u_k, \ldots, x_{N-1}} \sum_{k=1}^N g(x_k)
+\]</span> we arrive at a recurrence relation <span class="math display">\[
+J_k(x_k) = \max_{u_k}[g(x_k) + J_{k+1}(x_{k+1})]
+\]</span> with the boundary condition <span class="math display">\[
+J_N(x_N) = V(x_N) = g(x_N)
+\]</span> We also see that the original problem is found as <span class="math display">\[
+J_0(x_0) = \max_{u_0, \ldots, u_{N-1}} V(x_0, \ldots, x_N) = \max_{x_0}[g(x_0) + J_{1}(x_1)]
+\]</span> which is equivalently written using our original formulation as <span class="math display">\[
+J_0(x_0) = \max_{x_0, \ldots, u_{N-1}} V(x_0, \ldots, x_N) = \max_{x_0, \ldots, u_{N-1}} \sum_{k=0}^N g(x_k)
+\]</span></p>
+</section>
+<section id="solving-a-dynamic-programming-problem" class="level2">
+<h2 class="anchored" data-anchor-id="solving-a-dynamic-programming-problem">Solving a dynamic programming problem</h2>
+<p>We start with tabulating the possible values of <span class="math display">\[
+J_N(x_N) = g(x_N)
+\]</span> Then, for each value of <span class="math inline">\(x_{N-1}\)</span>, we compute <span class="math display">\[
+J_{N-1}(x_{N-1}) = \max_{u_{N-1}}[g(x_{N-1}) + J_{N}(x_N)]
+\]</span> We proceed, with computing, for each value of <span class="math inline">\(x_{N-2}\)</span>, the quantity <span class="math display">\[
+J_{N-2}(x_{N-2}) = \max_{u_{N-2}}[g(x_{N-2}) + J_{N-1}(x_{N-1})]
+\]</span> Continuing, we arrive at computing, for each value of <span class="math inline">\(x_1\)</span>, the quantity <span class="math display">\[
+J_{1}(x_{1}) = \max_{u_{1}}[g(x_{1}) + J_{2}(x_{2})]
+\]</span> As the final step, we compute, for each value of <span class="math inline">\(x_0\)</span>, the quantity <span class="math display">\[
+J_{0}(x_{0}) = \max_{u_{0}}[g(x_{0}) + J_{1}(x_{1})]
+\]</span> At this, final, step, we note for which <span class="math inline">\(x_0\)</span>, we obtained the maximum value of <span class="math inline">\(J_0(x_0)\)</span>.</p>
+<p>For this <span class="math inline">\(x_0\)</span>, we note the value of <span class="math inline">\(u(0)\)</span> that gave the maximum of <span class="math inline">\(J_0(x_0)\)</span>.</p>
+<p>This is the optimal, first, value of the control signal.</p>
+<p>We note that the computations done so far have been done by moving, from the final state <span class="math inline">\(x_N\)</span>, <em>backwards</em> in time, towards the initial state <span class="math inline">\(x_0\)</span>.</p>
+<p>Using the optimal <span class="math inline">\(u_0\)</span>, and the corresponding optimal <span class="math inline">\(x_0\)</span>, we can find the optimal <span class="math inline">\(x_1\)</span>.</p>
+<p>From the optimization that we did for <span class="math inline">\(x_1\)</span>, i.e.&nbsp;when we computed <span class="math inline">\(J_{1}(x_{1})\)</span>, we note which <span class="math inline">\(u_1\)</span> that gave the optimum value of <span class="math inline">\(J_{1}(x_{1})\)</span>.</p>
+<p>From this value of <span class="math inline">\(u_1\)</span>, we can find the optimal <span class="math inline">\(x_2\)</span>, and using that value, we note for which value of <span class="math inline">\(u_2\)</span> that we got the optimal value for <span class="math inline">\(J_{2}(x_{2})\)</span>.</p>
+<p>Proceeding like this, now moving <em>forward</em> in time, we find the optimal control sequence <span class="math display">\[
+u_0, \ldots, u_{N-1}
+\]</span> as well as the corresponding optimal state sequence <span class="math display">\[
+x_0, \ldots, x_{N}
+\]</span> From our computations backwards in time, we have also found the optimal loss function sequence <span class="math display">\[
+J_{0}(x_{0}), \ldots, J_{N}(x_{N})
+\]</span></p>
+</section>
+<section id="solving-the-dynamic-programming-for-finding-the-ash-line" class="level2">
+<h2 class="anchored" data-anchor-id="solving-the-dynamic-programming-for-finding-the-ash-line">Solving the dynamic programming for finding the ash line</h2>
+<p>We modify our example image, to make the optimization a bit more challenging.</p>
+<p>The modified image is</p>
+<pre><code>3 3 3 3 3
+3 6 5 6 3
+3 3 3 3 3
+1 1 1 1 1
+1 1 1 1 1</code></pre>
+<p>We index rows and columns starting with index 0, and with row 0 and column 0 as the upper left corner.</p>
+<p>We use <span class="math inline">\(R\)</span> to denote the number of rows and <span class="math inline">\(C\)</span> to denote the number of columns.</p>
+<p>For the example image, we have <span class="math inline">\(R=5\)</span> and <span class="math inline">\(C=5\)</span>.</p>
+<p>We use the notation <span class="math inline">\(h(x_i)\)</span> to denote the actual pixel value at <span class="math inline">\(x_i\)</span>, i.e.&nbsp;at column <span class="math inline">\(i\)</span> and row <span class="math inline">\(x_i\)</span>.</p>
+<p>This leads to a function <span class="math inline">\(g(x_i)\)</span>, defined, for <span class="math inline">\(0 \le x_i &lt; R\)</span> and <span class="math inline">\(0 \le i &lt; C\)</span> as <span class="math display">\[
+g(x_i) = h(x_i) - h(x_i+1)
+\]</span></p>
+<p>Using this gradient function on our modified example image results in</p>
+<pre><code>0 -3 -2 -3  0
+0  3  2  3  0
+2  2  2  2  2
+0  0  0  0  0
+-  -  -  -  -</code></pre>
+<p>Our solution method for dynamic programming, as described above, says that we shall start with computing, for each <span class="math inline">\(x_N\)</span>, <span class="math display">\[
+J_N(x_N) = g(x_N)
+\]</span> Noting that <span class="math inline">\(N=C-1=4\)</span>, we can make a table of this quantity, as</p>
+<div class="table-narrow" style="width: 30%; margin: auto;">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(x_4\)</span></th>
+<th><span class="math inline">\(J_4(x_4)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Continuing the solution approach described above, we shall now compute</p>
+<p><span class="math display">\[
+J_{N-1}(x_{N-1}) = \max_{u_{N-1}}[g(x_{N-1}) + J_{N}(x_N)]
+\]</span></p>
+<p>which, using <span class="math inline">\(N=4\)</span>, becomes <span class="math display">\[
+J_3(x_3) = \max_{u_3}[g(x_3) + J_{4}(x_{4})]
+\]</span></p>
+<p>When doing this computation, we also need to take into account the limitation on <span class="math inline">\(u_k\)</span>, that it can only take on the values in the admissible set <span class="math display">\[
+U=\{-1, 0, 1\}
+\]</span> which, as we saw above, means that the ash line can take at most one step upwards, or downwards, when moving from one colum to the next column (the column on the right).</p>
+<p>The result is that the values of <span class="math inline">\(x_4\)</span> that we consider, in the computation of <span class="math inline">\(J_3(x_3)\)</span> are <span class="math inline">\(x_3-1\)</span>, <span class="math inline">\(x_3\)</span>, and <span class="math inline">\(x_3+1\)</span></p>
+<p>As an additional notational aid, we use the notation <span class="math inline">\(u_3^*\)</span>, for the value of <span class="math inline">\(u_3\)</span> that gives the maximum value in the computation of <span class="math inline">\(J_3(x_3)\)</span>.</p>
+<p>With this in mind, we can illustrate the computation of <span class="math inline">\(J_3(x_3)\)</span> in a table, as</p>
+<div class="table-narrow" style="width: 70%; margin: auto;">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(x_3\)</span></th>
+<th><span class="math inline">\(g(x_3)\)</span></th>
+<th><span class="math inline">\(J_4(x_3-1)\)</span></th>
+<th><span class="math inline">\(J_4(x_3)\)</span></th>
+<th><span class="math inline">\(J_4(x_3+1)\)</span></th>
+<th><span class="math inline">\(J_3(x_3)\)</span></th>
+<th><span class="math inline">\(u_3^*\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>-3</td>
+<td>-</td>
+<td>0</td>
+<td>0</td>
+<td>-3</td>
+<td>0,1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>5</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>-</td>
+<td>2</td>
+<td>-1</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>-</td>
+<td>0</td>
+<td>-</td>
+<td>-</td>
+<td>0</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We can continue, and compute <span class="math inline">\(J_2(x_2)\)</span>, as <span class="math display">\[
+J_2(x_2) = \max_{u_2}[g(x_2) + J_{3}(x_{3})]
+\]</span> by filling in a similar table as the one above, as</p>
+<div class="table-narrow" style="width: 70%; margin: auto;">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(x_2\)</span></th>
+<th><span class="math inline">\(g(x_2)\)</span></th>
+<th><span class="math inline">\(J_3(x_2-1)\)</span></th>
+<th><span class="math inline">\(J_3(x_2)\)</span></th>
+<th><span class="math inline">\(J_3(x_2+1)\)</span></th>
+<th><span class="math inline">\(J_2(x_2)\)</span></th>
+<th><span class="math inline">\(u_2^*\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>-2</td>
+<td>-</td>
+<td>-3</td>
+<td>5</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>2</td>
+<td>-3</td>
+<td>5</td>
+<td>4</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2</td>
+<td>5</td>
+<td>4</td>
+<td>2</td>
+<td>7</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>4</td>
+<td>-1</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>-</td>
+<td>2</td>
+<td>0</td>
+<td>-</td>
+<td>2</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For the next iteration, we compute</p>
+<p><span class="math display">\[
+J_1(x_1) = \max_{u_1}[g(x_1) + J_{2}(x_{2})]
+\]</span> with a table, as</p>
+<div class="table-narrow" style="width: 70%; margin: auto;">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(x_1\)</span></th>
+<th><span class="math inline">\(g(x_1)\)</span></th>
+<th><span class="math inline">\(J_2(x_1-1)\)</span></th>
+<th><span class="math inline">\(J_2(x_1)\)</span></th>
+<th><span class="math inline">\(J_2(x_1+1)\)</span></th>
+<th><span class="math inline">\(J_1(x_1)\)</span></th>
+<th><span class="math inline">\(u_1^*\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>-3</td>
+<td>-</td>
+<td>3</td>
+<td>7</td>
+<td>4</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>3</td>
+<td>3</td>
+<td>7</td>
+<td>7</td>
+<td>10</td>
+<td>0, 1</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2</td>
+<td>7</td>
+<td>7</td>
+<td>4</td>
+<td>9</td>
+<td>-1, 0</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0</td>
+<td>7</td>
+<td>4</td>
+<td>2</td>
+<td>7</td>
+<td>-1</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>-</td>
+<td>4</td>
+<td>2</td>
+<td>-</td>
+<td>4</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>As our final calculation, we compute</p>
+<p><span class="math display">\[
+J_0(x_0) = \max_{u_1}[g(x_1) + J_{1}(x_{1})]
+\]</span> with a table, as</p>
+<div class="table-narrow" style="width: 70%; margin: auto;">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 15%">
+<col style="width: 17%">
+<col style="width: 15%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(x_0\)</span></th>
+<th><span class="math inline">\(g(x_0)\)</span></th>
+<th><span class="math inline">\(J_1(x_0-1)\)</span></th>
+<th><span class="math inline">\(J_1(x_0)\)</span></th>
+<th><span class="math inline">\(J_1(x_0+1)\)</span></th>
+<th><span class="math inline">\(J_0(x_0)\)</span></th>
+<th><span class="math inline">\(u_0^*\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0</td>
+<td>-</td>
+<td>4</td>
+<td>10</td>
+<td>10</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0</td>
+<td>4</td>
+<td>10</td>
+<td>9</td>
+<td>10</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2</td>
+<td>10</td>
+<td>9</td>
+<td>7</td>
+<td>12</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>0</td>
+<td>9</td>
+<td>7</td>
+<td>4</td>
+<td>9</td>
+<td>-1</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>-</td>
+<td>7</td>
+<td>4</td>
+<td>-</td>
+<td>7</td>
+<td>-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We see that the maximum value of <span class="math inline">\(J(x_0)\)</span> occurs for <span class="math inline">\(x_0=2\)</span>.</p>
+<p>The value <span class="math inline">\(u_0*=-1\)</span> then gives <span class="math inline">\(x_1 = 1\)</span>.</p>
+<p>Looking in the table where the leftmost column is <span class="math inline">\(x_1\)</span>, we see that <span class="math inline">\(u_1^*=0\)</span> or <span class="math inline">\(u_1^*=1\)</span>.</p>
+<p>This gives two alternatives for <span class="math inline">\(x_2\)</span>, as <span class="math inline">\(x_2=1\)</span> or <span class="math inline">\(x_2=2\)</span></p>
+<p>Looking in the table where the leftmost column is <span class="math inline">\(x_2\)</span>, we see that <span class="math inline">\(x_2=1\)</span> gives <span class="math inline">\(u_2^*=0\)</span> and <span class="math inline">\(x_2=2\)</span> gives <span class="math inline">\(u_2^*=-1\)</span>.</p>
+<p>Both of these choices lead to <span class="math inline">\(x_3=1\)</span>.</p>
+<p>Looking in the table where the leftmost column is <span class="math inline">\(x_3\)</span>, we see that <span class="math inline">\(x_3=1\)</span> gives <span class="math inline">\(u_3^*=1\)</span>.</p>
+<p>This gives <span class="math inline">\(x_4=2\)</span>.</p>
+<p>To summarize, we have two optimal solutions, given by <span class="math display">\[
+x_0=2, x_1=1, x_2=1, x_3=1, x_4=2
+\]</span> with optimal control signal <span class="math display">\[
+u_0^*=-1, u_1^*=0, u_2^*=0, u_3^*=1
+\]</span> and <span class="math display">\[
+x_0=2, x_1=1, x_2=2, x_3=1, x_4=2
+\]</span> with optimal control signal <span class="math display">\[
+u_0^*=-1, u_1^*=1, u_2^*=0, u_3^*=1
+\]</span> Both give the optimal value <span class="math inline">\(J(x_0)=12\)</span>.</p>
+<p>Indicating the optimal solutions in our image gives</p>
+<pre><code> 3   3   3   3   3
+ 3  (6) (5) (6)  3
+(3)  3   3   3  (3)
+ 1   1   1   1   1
+ 1   1   1   1   1 </code></pre>
+<p>and</p>
+<pre><code> 3   3   3   3   3
+ 3  (6)  5  (6)  3
+(3)  3  (3)  3  (3)
+ 1   1   1   1   1
+ 1   1   1   1   1 </code></pre>
+</section>
+<section id="python-implementation-of-dynamic-programming-for-ash-line-detection" class="level2">
+<h2 class="anchored" data-anchor-id="python-implementation-of-dynamic-programming-for-ash-line-detection">Python implementation of dynamic programming for ash line detection</h2>
+<p>A Python implementation of the dynamic programming algorithm, as described above, with application to ash line detection, has been done.</p>
+<p>The implmentation uses <code>numpy</code> and <code>matplotlib</code>.</p>
+<p>The image is represented by a class</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Image:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_rows, n_cols):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_rows <span class="op">=</span> n_rows</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.n_cols <span class="op">=</span> n_cols</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.arr <span class="op">=</span> np.zeros([<span class="va">self</span>.n_rows, <span class="va">self</span>.n_cols])</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> set_values(<span class="va">self</span>, values):</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">assert</span> values.shape <span class="op">==</span> (<span class="va">self</span>.n_rows, <span class="va">self</span>.n_cols)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.arr <span class="op">=</span> values</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> set_value(<span class="va">self</span>, row, col, value):</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.arr[row, col] <span class="op">=</span> value</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_value(<span class="va">self</span>, row, col):</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.arr[row, col]</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> set_with_border(<span class="va">self</span>, m_above, std_above, m_below, std_below):</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># the border is the ash line, that we want to detect with DP</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        border <span class="op">=</span> []</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># random start row for the border</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        r <span class="op">=</span> np.random.randint(<span class="bu">int</span>(<span class="fl">0.25</span> <span class="op">*</span> <span class="va">self</span>.n_rows), <span class="bu">int</span>(<span class="fl">0.75</span> <span class="op">*</span> <span class="va">self</span>.n_rows))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        border.append(r)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># remaining row values for the border</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="va">self</span>.n_cols):</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            <span class="co"># a ranom control signal, in the admissible set [-1, 0, 1]</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            u <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">3</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>            u <span class="op">-=</span> <span class="dv">1</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>            x_i <span class="op">=</span> border[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>            x_i <span class="op">=</span> x_i <span class="op">+</span> u</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>            border.append(x_i)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># generate pixel values, with different means and standard deviations</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="co"># for pixels above and below the border</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_rows):</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> c <span class="kw">in</span> <span class="bu">range</span>(<span class="va">self</span>.n_cols):</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> r <span class="op">&lt;=</span> border[c]:</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>                    value <span class="op">=</span> np.random.normal(loc<span class="op">=</span>m_above, scale<span class="op">=</span>std_above)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>                    value <span class="op">=</span> np.random.normal(loc<span class="op">=</span>m_below, scale<span class="op">=</span>std_below)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.arr[r][c] <span class="op">=</span> value</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> show(<span class="va">self</span>, title, v_max):</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        plt.imshow(<span class="va">self</span>.arr, cmap<span class="op">=</span><span class="st">"gray"</span>, vmax<span class="op">=</span>v_max)</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        plt.title(title)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The dynamic programming calculations are implemented in a class <code>DynProg</code>, with a constructor taking an image as parameter, as</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DynProg:</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, image):</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image <span class="op">=</span> image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The vertical gradient is calculated by a member function, as</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> g(<span class="va">self</span>, x_i, i):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> x_i <span class="op">&gt;=</span> <span class="va">self</span>.image.n_rows <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        grad <span class="op">=</span> <span class="va">self</span>.image.get_value(x_i, i) <span class="op">-</span> <span class="va">self</span>.image.get_value(x_i <span class="op">+</span> <span class="dv">1</span>, i)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> grad</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The dynamic programming calculations are done in a member function <code>solve</code>, as</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> solve(<span class="va">self</span>):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>        N <span class="op">=</span> <span class="va">self</span>.image.n_cols <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        n_x_i <span class="op">=</span> <span class="va">self</span>.image.n_rows</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        J_mat <span class="op">=</span> np.zeros([n_x_i, N <span class="op">+</span> <span class="dv">1</span>])</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        u_mat <span class="op">=</span> np.zeros([n_x_i, N])</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        u_values <span class="op">=</span> np.array([<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># fill in the last column of the J matrix</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x_i <span class="kw">in</span> <span class="bu">range</span>(n_x_i):</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            J_mat[x_i, <span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> <span class="va">self</span>.g(x_i, N)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># fill in the remaining columns, from right to left</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(N <span class="op">-</span> <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>):</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> x_i <span class="kw">in</span> <span class="bu">range</span>(n_x_i):</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                <span class="co"># three values, one for each next state, with each of these</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                <span class="co"># corresponding to one of the three control signal values -1, 0, and 1</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                J_k_plus_1 <span class="op">=</span> np.zeros(<span class="dv">3</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                <span class="co"># the gradient</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>                g_x_i <span class="op">=</span> <span class="va">self</span>.g(x_i, k)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                <span class="co"># u = -1</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> x_i <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                    J_k_plus_1[<span class="dv">0</span>] <span class="op">=</span> J_mat[x_i <span class="op">-</span> <span class="dv">1</span>, k <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                <span class="co"># u = 0</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>                J_k_plus_1[<span class="dv">1</span>] <span class="op">=</span> J_mat[x_i, k <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>                <span class="co"># u = -1</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> x_i <span class="op">&lt;</span> n_x_i <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>                    J_k_plus_1[<span class="dv">2</span>] <span class="op">=</span> J_mat[x_i <span class="op">+</span> <span class="dv">1</span>, k <span class="op">+</span> <span class="dv">1</span>]</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>                value_vec <span class="op">=</span> g_x_i <span class="op">+</span> J_k_plus_1</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>                <span class="co"># calculate the best u (there might be more than one, but we let argmax pick one)</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                u_opt_index <span class="op">=</span> np.argmax(value_vec)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>                <span class="co"># the optimal J value</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                J_k_value <span class="op">=</span> value_vec[u_opt_index]</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>                <span class="co"># store optimal J value</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>                J_mat[x_i, k] <span class="op">=</span> J_k_value</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>                <span class="co"># store optimal control signal</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>                u_mat[x_i, k] <span class="op">=</span> u_values[u_opt_index]</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.J_mat <span class="op">=</span> J_mat</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.u_mat <span class="op">=</span> u_mat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For the purpose of presentation, the solution calculated by dynamic programming can be visualised, by setting the pixel values corresponding to the dynamic programming solution to a specified value.</p>
+<p>By setting these pixels to a specified value, e.g.&nbsp;a value higher than any other pixel in the image, the calculated ash line can be visualised.</p>
+<p>The function for setting the pixels corresponding to the dynamic programming solutin is defined as</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> mark_solution_in_image(<span class="va">self</span>, mark_value):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>        <span class="co"># the optimal solution starts at the best x_0</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        x_0 <span class="op">=</span> np.argmax(<span class="va">self</span>.J_mat[:, <span class="dv">0</span>])</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># the optimal control signal for x_0</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        u <span class="op">=</span> <span class="bu">int</span>(<span class="va">self</span>.u_mat[x_0, <span class="dv">0</span>])</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        x_i <span class="op">=</span> x_0</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># mark solution for first column</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.image.set_value(x_i, <span class="dv">0</span>, mark_value)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="va">self</span>.J_mat.shape[<span class="dv">1</span>]):</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            x_i <span class="op">=</span> x_i <span class="op">+</span> u</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># mark solution for this x_i value</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.image.set_value(x_i, i, mark_value)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>            <span class="co"># no control signal defined for the rightmost column</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> i <span class="op">&lt;</span> <span class="va">self</span>.J_mat.shape[<span class="dv">1</span>] <span class="op">-</span> <span class="dv">1</span>:</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>                u <span class="op">=</span> <span class="bu">int</span>(<span class="va">self</span>.u_mat[x_i, i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="using-the-python-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="using-the-python-implementation">Using the Python implementation</h2>
+<p>For our first example image, where the optimal value was found by inspection, as</p>
+<pre><code> 3   3   3   3   3
+ 3   3   3   3   3
+(3) (3) (3) (3) (3)
+ 1   1   1   1   1
+ 1   1   1   1   1</code></pre>
+<p>we visualize the dynamic programming solution, as</p>
+<p><img src="code/img_1.png" class="img-fluid"></p>
+<p>For our second example image, where the optimal value was found by dynamic programming, as</p>
+<pre><code> 3   3   3   3   3
+ 3  (6) (5) (6)  3
+(3)  3   3   3  (3)
+ 1   1   1   1   1
+ 1   1   1   1   1 </code></pre>
+<p>we visualize the dynamic programming solution, as</p>
+<p><img src="code/img_2.png" class="img-fluid"></p>
+<p>An image with a randomly selected ash line, and pixels above and below the ash line having values drawn from a normal distribution with standard deviation 15, and mean value 100 above the ash line and 65 below the ash line, is shown as</p>
+<p><img src="code/img_3.png" class="img-fluid"></p>
+<p>Using the Python implementation of dynamic programming described above gives the ash line, as</p>
+<p><img src="code/img_4.png" class="img-fluid"></p>
+<p>We can make the situation a bit more challenging, by choosing the mean value below the ash line as 85 (instead of 65), and keeping the mean value above the ash line as 100 and the standard deviations at 15.</p>
+<p>This gives an image, as</p>
+<p><img src="code/img_5.png" class="img-fluid"></p>
+<p>with a dynamic programming result, as</p>
+<p><img src="code/img_6.png" class="img-fluid"></p>
+</section>
+<section id="what-do-the-control-guys-say" class="level2">
+<h2 class="anchored" data-anchor-id="what-do-the-control-guys-say">What do the control guys say?</h2>
+<p>The above description of dynamic programming was inspired by books and other material, such as slides, from <a href="https://web.mit.edu/dimitrib/www/home.html" target="_blank">Prof.&nbsp;Dimitri Bertsekas</a>.</p>
+<p>Dynamic programming, presented in this way, originates from the works of <a href="https://en.wikipedia.org/wiki/Richard_E._Bellman" target="_blank">Richard Bellman</a>.</p>
+</section>
+<section id="how-can-we-relate-to-dynamic-programming-as-used-in-computer-science" class="level2">
+<h2 class="anchored" data-anchor-id="how-can-we-relate-to-dynamic-programming-as-used-in-computer-science">How can we relate to dynamic programming as used in computer science?</h2>
+<p>Dynamic programming is a term also used in computer science.</p>
+<p>For a description, covering also the control-oriented approach, the <a href="https://en.wikipedia.org/wiki/Dynamic_programming" target="_blank">Wikipedia article</a> could be a good starting point.</p>
+</section>
+<section id="where-to-go-from-here" class="level2">
+<h2 class="anchored" data-anchor-id="where-to-go-from-here">Where to go from here</h2>
+<p>The purpose of this post was to describe dynamic programming as is often done in control oriented literature.</p>
+<p>A simple loss function, based on the vertical gradient, was used, and illustrated in some examples.</p>
+<p>One can of course use a more elaborate loss function (or use machine learning, or any other method of choice).</p>
+<p>In future blog posts, I will try to illustrate how dynamic programming, as described in this post, can be applied to different problems.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
